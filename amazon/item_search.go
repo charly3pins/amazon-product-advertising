@@ -1,4 +1,4 @@
-package main
+package amazon
 
 import (
 	"crypto/hmac"
@@ -37,39 +37,22 @@ type Client struct {
 	Region          string
 }
 
-func main() {
+func NewClient() *Client {
 	awsAccessKey := flag.String("awsAccessKey", os.Getenv("AWS_ACCESS_KEY_ID"), "aws acces key")
 	awsSecretKey := flag.String("awsSecretKey", os.Getenv("AWS_SECRET_ACCESS_KEY"), "aws secret acces key")
 	awsAssociateTag := flag.String("aswsAssociateTag", os.Getenv("AWS_ASSOCIATE_TAG"), "asws associate tag")
 	awsRegion := flag.String("awsRegion", os.Getenv("AWS_PRODUCT_REGION"), "aws product region")
 	flag.Parse()
 
-	client := Client{*awsAccessKey, *awsSecretKey, *awsAssociateTag, *awsRegion}
-	params := map[string]string{
-		"SearchIndex":   "Books",
-		"Keywords":      "Clean Code",
-		"ResponseGroup": "Images,ItemAttributes",
-	}
-
-	res, err := client.ItemSearch(params)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Printf("%d results found\n\n", res.Items.TotalResults)
-	for _, item := range res.Items.Item {
-		fmt.Printf(`-------------------------------
-		[Title] %v
-		[Author]   %v
-		[Binding]   %v
-		[LargeImage] %v
-		[URL]   %v
-		`, item.ItemAttributes.Title, item.ItemAttributes.Author, item.ItemAttributes.Binding, item.ImageSets.ImageSet[0].LargeImage, item.DetailPageURL)
-	}
+	return &Client{*awsAccessKey, *awsSecretKey, *awsAssociateTag, *awsRegion}
 }
 
-func (c *Client) ItemSearch(params map[string]string) (*ItemSearchResponse, error) {
+func (c *Client) ItemSearch(searchIndex, keywords string) (*ItemSearchResponse, error) {
+	params := map[string]string{
+		"SearchIndex":   searchIndex,
+		"Keywords":      keywords,
+		"ResponseGroup": "Images,ItemAttributes",
+	}
 	url, err := c.buildURL(params)
 	if err != nil {
 		return nil, err

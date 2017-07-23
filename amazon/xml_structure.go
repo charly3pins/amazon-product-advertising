@@ -1,4 +1,4 @@
-package main
+package amazon
 
 import (
 	"encoding/xml"
