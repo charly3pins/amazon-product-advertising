@@ -48,12 +48,13 @@ func main() {
 	params := map[string]string{
 		"SearchIndex":   "Books",
 		"Keywords":      "Clean Code",
-		"ResponseGroup": "Images,ItemAttributes,Offers",
+		"ResponseGroup": "Images,ItemAttributes",
 	}
 
 	res, err := client.ItemSearch(params)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	fmt.Printf("%d results found\n\n", res.Items.TotalResults)
