@@ -17,26 +17,20 @@ import (
 )
 
 func main() {
-	client := amazon.NewClient()
+	client := amazon.Client{"{YOUR_AWS_ACCESS_KEY_ID}", "{YOUR_AWS_SECRET_ACCESS_KEY}", "collectus-21", "{YOUR_AWS_PRODUCT_REGION}"}
 	res, err := client.ItemSearch("Books", "Clean Code")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-
+	
 	fmt.Printf("%d results found\n\n", res.Items.TotalResults)
 	for i, item := range res.Items.Item {
 		fmt.Printf("Result: %d\nTitle: %v\nAuthor: %v\nBinding: %v\nLargeImage: %v\nURL: %v\n\n", i, item.ItemAttributes.Title, item.ItemAttributes.Author, item.ItemAttributes.Binding, item.ImageSets.ImageSet[0].LargeImage, item.DetailPageURL)
 	}
 }
 ```
-In order to work correctly, you must set the following environment variables before execute the code:
-```sh
-export AWS_ACCESS_KEY_ID={YOUR_AWS_ACCESS_KEY_ID}
-export AWS_SECRET_ACCESS_KEY={YOUR_AWS_SECRET_ACCESS_KEY}
-export AWS_ASSOCIATE_TAG=collectus-21
-export AWS_PRODUCT_REGION={YOUR_AWS_PRODUCT_REGION}
-```
+
 Finally, you can execute the example created:
 ```
 go run example.go
