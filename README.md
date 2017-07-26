@@ -13,7 +13,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/charly3pins/go-amazon-product-api/amazon"
+	amazon "github.com/charly3pins/go-amazon-product-api"
 )
 
 func main() {
