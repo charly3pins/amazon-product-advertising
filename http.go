@@ -30,7 +30,7 @@ type AmazonRequest interface {
 	Do() (*http.Response, error)
 }
 
-type HttpClient struct {
+type HTTPClient struct {
 	Client     Client
 	Parameters map[string]string
 }
@@ -50,7 +50,7 @@ func (h HttpClient) Do() (*http.Response, error) {
 	return res, nil
 }
 
-func (h HttpClient) buildUrlValues() url.Values {
+func (h HTTPClient) buildUrlValues() url.Values {
 	urlValues := url.Values{}
 	urlValues.Set("Service", "AWSECommerceService")
 	urlValues.Set("AWSAccessKeyId", h.Client.AccessKeyID)
@@ -62,7 +62,7 @@ func (h HttpClient) buildUrlValues() url.Values {
 	return urlValues
 }
 
-func (h HttpClient) signURL(urlValues url.Values) (string, error) {
+func (h HTTPClient) signURL(urlValues url.Values) (string, error) {
 	endpoint := fmt.Sprintf("http://%s/onca/xml", domains[h.Client.Region])
 	parsedURL, _ := url.Parse(endpoint)
 
