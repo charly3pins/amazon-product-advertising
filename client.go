@@ -19,7 +19,7 @@ func (c Client) ItemSearch(searchIndex, keywords string) (*ItemSearchResponse, e
 		"Keywords":      keywords,
 		"ResponseGroup": "Images,ItemAttributes",
 	}
-	httpClient := HttpClient{c, params}
+	httpClient := HTTPClient{c, params}
 	res, err := httpClient.Do()
 	if data, _ := ioutil.ReadAll(res.Body); data != nil {
 		if err = xml.Unmarshal(data, &itemSearchResponse); err != nil {
