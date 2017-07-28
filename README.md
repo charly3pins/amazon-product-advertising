@@ -1,4 +1,5 @@
 # go-amazon-product-api
+[![GoDoc](https://godoc.org/github.com/charly3pins/go-amazon-product-api?status.svg)](https://godoc.org/github.com/charly3pins/go-amazon-product-api)
 
 Go Client Library for [Amazon Product API](https://affiliate-program.amazon.com/gp/advertising/api/detail/main.html)
 
