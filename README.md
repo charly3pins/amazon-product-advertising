@@ -18,6 +18,7 @@ import (
 )
 
 func main() {
+	client := amazon.NewClient(amazon.ClientConfig{"{YOUR_AWS_ACCESS_KEY_ID}", "{YOUR_AWS_SECRET_ACCESS_KEY}", "collectus-21", "{YOUR_AWS_PRODUCT_REGION})
 	client := amazon.Client{"{YOUR_AWS_ACCESS_KEY_ID}", "{YOUR_AWS_SECRET_ACCESS_KEY}", "collectus-21", "{YOUR_AWS_PRODUCT_REGION}"}
 	res, err := client.ItemSearch("Books", "Clean Code")
 	if err != nil {
