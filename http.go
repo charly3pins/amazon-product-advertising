@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"sort"
@@ -24,50 +25,41 @@ var (
 		"UK": "ecs.amazonaws.co.uk",
 		"US": "ecs.amazonaws.com",
 	}
+	defaultHTTPClient = http.DefaultClient
 )
 
-type AmazonRequest interface {
-	Do() (*http.Response, error)
+type HTTPClient interface {
+	Do(*http.Request, map[string]string) (*http.Response, error)
 }
 
-type HTTPClient struct {
-	Client     Client
-	Parameters map[string]string
+type awsHTTPClient struct {
+	Config ClientConfig
 }
 
-func (h HttpClient) Do() (*http.Response, error) {
-	urlValues := h.buildUrlValues()
-	url, err := h.signURL(urlValues)
+func NewAWSHTTPClient(config ClientConfig) HTTPClient {
+	return awsHTTPClient{config}
+}
+
+func (a awsHTTPClient) Do(req *http.Request, params map[string]string) (*http.Response, error) {
+	url, err := a.signURL(req.URL, params)
 	if err != nil {
+		log.Println("Error:", err.Error())
 		return nil, err
 	}
 
-	res, err := http.Get(url)
+	res, err := defaultHTTPClient.Get(url)
 	if err != nil {
+		log.Println("Error:", err.Error())
 		return nil, err
 	}
 
 	return res, nil
 }
 
-func (h HTTPClient) buildUrlValues() url.Values {
-	urlValues := url.Values{}
-	urlValues.Set("Service", "AWSECommerceService")
-	urlValues.Set("AWSAccessKeyId", h.Client.AccessKeyID)
-	urlValues.Set("Version", "2013-08-01")
-	urlValues.Set("Operation", "ItemSearch")
-	urlValues.Set("AssociateTag", h.Client.AssociateTag)
-	urlValues.Set("Timestamp", time.Now().UTC().Format(time.RFC3339))
-
-	return urlValues
-}
-
-func (h HTTPClient) signURL(urlValues url.Values) (string, error) {
-	endpoint := fmt.Sprintf("http://%s/onca/xml", domains[h.Client.Region])
-	parsedURL, _ := url.Parse(endpoint)
-
+func (a awsHTTPClient) signURL(parsedURL *url.URL, params map[string]string) (string, error) {
+	urlValues := a.buildUrlValues()
 	// ADD PARAMS TO THE QUERY
-	for key, value := range h.Parameters {
+	for key, value := range params {
 		urlValues.Set(key, value)
 	}
 
@@ -88,7 +80,7 @@ func (h HTTPClient) signURL(urlValues url.Values) (string, error) {
 	query := strings.Join(queryKeysAndValues, "&")
 
 	msg := fmt.Sprintf("GET\n%s\n%s\n%s", parsedURL.Host, parsedURL.Path, query)
-	hasher := hmac.New(sha256.New, []byte(h.Client.SecretAccessKey))
+	hasher := hmac.New(sha256.New, []byte(a.Config.SecretAccessKey))
 	_, err := hasher.Write([]byte(msg))
 	if err != nil {
 		return "", err
@@ -100,4 +92,16 @@ func (h HTTPClient) signURL(urlValues url.Values) (string, error) {
 	parsedURL.RawQuery = urlValues.Encode()
 
 	return parsedURL.String(), nil
+}
+
+func (a awsHTTPClient) buildUrlValues() url.Values {
+	urlValues := url.Values{}
+	urlValues.Set("Service", "AWSECommerceService")
+	urlValues.Set("AWSAccessKeyId", a.Config.AccessKeyID)
+	urlValues.Set("Version", "2013-08-01")
+	urlValues.Set("Operation", "ItemSearch")
+	urlValues.Set("AssociateTag", a.Config.AssociateTag)
+	urlValues.Set("Timestamp", time.Now().UTC().Format(time.RFC3339))
+
+	return urlValues
 }
