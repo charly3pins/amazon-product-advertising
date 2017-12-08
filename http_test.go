@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestAwsHTTPClientt_Do(t *testing.T) {
+func TestAwsHTTPClient_Do(t *testing.T) {
 	server := httptest.NewServer(&myHandler{func(w http.ResponseWriter, req *http.Request) {
 		if req.Method != http.MethodGet {
 			t.Error("unexpected method:", req.Method)
