@@ -18,14 +18,24 @@ import (
 )
 
 func main() {
-	client := amazon.NewClient(amazon.ClientConfig{"{YOUR_AWS_ACCESS_KEY_ID}", "{YOUR_AWS_SECRET_ACCESS_KEY}", "collectus-21", "{YOUR_AWS_PRODUCT_REGION})
-	client := amazon.Client{"{YOUR_AWS_ACCESS_KEY_ID}", "{YOUR_AWS_SECRET_ACCESS_KEY}", "collectus-21", "{YOUR_AWS_PRODUCT_REGION}"}
-	res, err := client.ItemSearch("Books", "Clean Code")
+	criteria := amazon.Criteria{
+		SearchIndex: "Books",
+		Keywords:    "Clean Code",
+	}
+	config := amazon.ClientConfig{
+		AccessKeyID:     "{YOUR_AWS_ACCESS_KEY_ID}",
+		SecretAccessKey: "{YOUR_AWS_SECRET_ACCESS_KEY}",
+		AssociateTag:    "collectus-21",
+		Region:          "{YOUR_AWS_PRODUCT_REGION}",
+		AWSEndpoint:     amazon.GetEndpoint("{YOUR_AWS_PRODUCT_REGION}"),
+	}
+	client := amazon.NewClient(config)
+	res, err := client.ItemSearch(criteria)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	
+
 	fmt.Printf("%d results found\n\n", res.Items.TotalResults)
 	for i, item := range res.Items.Item {
 		fmt.Printf("Result: %d\nTitle: %v\nAuthor: %v\nBinding: %v\nLargeImage: %v\nURL: %v\n\n", i, item.ItemAttributes.Title, item.ItemAttributes.Author, item.ItemAttributes.Binding, item.ImageSets.ImageSet[0].LargeImage, item.DetailPageURL)
