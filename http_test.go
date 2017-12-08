@@ -1,34 +1,101 @@
 package amazon
 
-/*
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 )
 
-const signedUrl = "http://webservices.amazon.es/onca/xml?AWSAccessKeyId=AWSK&AssociateTag=collectus-21&Keywords=Clean+Code&Operation=ItemSearch&ResponseGroup=Images%2CItemAttributes&SearchIndex=Books&Service=AWSECommerceService&Signature=%2FBe%2BqvyOpvdc2XA0YCxPYD3Wp1LKqWDBnk60k3%2BLPlM%3D&Timestamp=2017-07-26+23%3A00%3A00+%2B0900+Europe%2FSpain&Version=2013-08-01"
+func TestAwsHTTPClientt_Do(t *testing.T) {
+	server := httptest.NewServer(&myHandler{func(w http.ResponseWriter, req *http.Request) {
+		if req.Method != http.MethodGet {
+			t.Error("unexpected method:", req.Method)
+			return
+		}
+		fmt.Fprintf(w,
+			`{
+				"ItemSearchResponse": {
+					"Items": {
+						"Request": {
+							"IsValid": true
+						}
+					},
+					"TotalResult": 122879,
+					"TotalPages": 12288,
+					"MoreSearchResultsUrl": "url",
+					"Item": {
+						"ASIN": "ASIN_CODE",
+						"DetailPageURL": "Detail_Page_Url",
+						"ItemLinks": [{
+							"ItemLink": {
+								"Description": "Desc",
+								"URL": "URL"
+							}
+						}]
+					},
+					"SmallImage": {
+						"URL": "url_small_img",
+						"Height": {
+							"Value": 75,
+							"Units": "pixels"
+						}
+					},
+					"MediumImage": {
+						"URL": "url_medium_img",
+						"Height": {
+							"Value": 160,
+							"Units": "pixels"
+						}
+					},
+					"LargImage": {
+						"URL": "url_large_img",
+						"Height": {
+							"Value": 500,
+							"Units": "pixels"
+						}
+					},
+					"ItemAttributes": {
+						"Binding": "Toy",
+						"Brand": "Best Brand",
+						"EAN": "EAN_NUMBER",
+						"Label": "The label ",
+						"Title": "My fantastic object",
+						"ListPrice": {
+							"Amount": "100",
+							"Currency": "EUR",
+							"FormattedPrice": "EUR 9,88"
+						}
+					}
+				}
+			}`)
+	}})
+	defer server.Close()
 
-func TestHTTPClientSignUrl(t *testing.T) {
-	client := Client{"AWSK", "AWSS", "collectus-21", "ES"}
-	params := map[string]string{
-		"SearchIndex":   "Books",
-		"Keywords":      "Clean Code",
-		"ResponseGroup": "Images,ItemAttributes",
+	config := ClientConfig{
+		AccessKeyID:     "some_ID",
+		SecretAccessKey: "some_secret",
+		AssociateTag:    "some_tag",
+		Region:          "ES",
+		AWSEndpoint:     server.URL,
 	}
-	httpClient := HTTPClient{client, params}
 
-	urlValues := httpClient.buildUrlValues()
-	urlValues.Set("Timestamp", time.Date(2017, time.July, 26, 23, 00, 0, 0, time.FixedZone("Europe/Spain", 9*60*60)).String())
-	url, err := httpClient.signURL(urlValues)
+	c := awsHTTPClient{config}
+	req, err := http.NewRequest(http.MethodGet, server.URL, nil)
 	if err != nil {
-		t.Errorf("Error signing URL with %v", urlValues)
+		t.Error(err)
+		return
 	}
-
-	if signedUrl != url {
-		t.Errorf(`Expected "%v" but got "%v"`, signedUrl, url)
+	resp, err := c.Do(req)
+	if err != nil {
+		t.Error(err)
+		return
 	}
+	data := ItemSearchResponse{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		t.Error("decoding the resp body:", err.Error())
+		return
+	}
+	defer resp.Body.Close()
 }
-*/
