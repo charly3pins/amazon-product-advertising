@@ -1,4 +1,6 @@
 # go-amazon-product-api
+[![GoDoc](https://godoc.org/github.com/charly3pins/go-amazon-product-api?status.svg)](https://godoc.org/github.com/charly3pins/go-amazon-product-api)
+[![Build Status](https://travis-ci.org/charly3pins/go-amazon-product-api.png?branch=master)](https://travis-ci.org/charl3pins/go-amazon-product-api)
 
 Go Client Library for [Amazon Product API](https://affiliate-program.amazon.com/gp/advertising/api/detail/main.html)
 
@@ -17,8 +19,19 @@ import (
 )
 
 func main() {
-	client := amazon.NewClient()
-	res, err := client.ItemSearch("Books", "Clean Code")
+	criteria := amazon.Criteria{
+		SearchIndex: "Books",
+		Keywords:    "Clean Code",
+	}
+	config := amazon.ClientConfig{
+		AccessKeyID:     "{YOUR_AWS_ACCESS_KEY_ID}",
+		SecretAccessKey: "{YOUR_AWS_SECRET_ACCESS_KEY}",
+		AssociateTag:    "collectus-21",
+		Region:          "{YOUR_AWS_PRODUCT_REGION}",
+		AWSEndpoint:     amazon.GetEndpoint("{YOUR_AWS_PRODUCT_REGION}"),
+	}
+	client := amazon.NewClient(config)
+	res, err := client.ItemSearch(criteria)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -30,13 +43,7 @@ func main() {
 	}
 }
 ```
-In order to work correctly, you must set the following environment variables before execute the code:
-```sh
-export AWS_ACCESS_KEY_ID={YOUR_AWS_ACCESS_KEY_ID}
-export AWS_SECRET_ACCESS_KEY={YOUR_AWS_SECRET_ACCESS_KEY}
-export AWS_ASSOCIATE_TAG=collectus-21
-export AWS_PRODUCT_REGION={YOUR_AWS_PRODUCT_REGION}
-```
+
 Finally, you can execute the example created:
 ```
 go run example.go
