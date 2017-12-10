@@ -9,7 +9,7 @@ First of all you need to download the library in your [$GOPATH](https://golang.o
 ```sh
 go get -u github.com/charly3pins/go-amazon-product-api/amazon
 ```
-Then, you can create a simple example.go and call the NewClient() constructor and the ItemSearch(searchIndex, keywords string) method to search by text:
+Then, you can create a simple example.go and call the NewClient(config) constructor passing the ClientConfig with your credentials and call the ItemSearch(criteria) method with your creteria, selecting the SearchIndex and the Keywords, to search by text:
 ```go
 package main
 
