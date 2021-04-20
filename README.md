@@ -1,6 +1,6 @@
-# amazon-product-api
-[![GoDoc](https://godoc.org/github.com/charly3pins/amazon-product-api?status.svg)](https://godoc.org/github.com/charly3pins/amazon-product-api)
-[![Build Status](https://travis-ci.org/charly3pins/amazon-product-api.svg?branch=master)](https://travis-ci.org/charly3pins/amazon-product-api)
+# amazon-product-advertising
+[![GoDoc](https://godoc.org/github.com/charly3pins/amazon-product-advertising?status.svg)](https://godoc.org/github.com/charly3pins/amazon-product-advertising)
+[![Build Status](https://travis-ci.org/charly3pins/amazon-product-advertising.svg?branch=master)](https://travis-ci.org/charly3pins/amazon-product-advertising)
 
 Go Client Library for [Amazon Product Advertising API](https://affiliate-program.amazon.com/gp/advertising/api/detail/main.html)
 
