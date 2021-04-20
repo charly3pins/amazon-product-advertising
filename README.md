@@ -1,13 +1,13 @@
-# go-amazon-product-api
-[![GoDoc](https://godoc.org/github.com/charly3pins/go-amazon-product-api?status.svg)](https://godoc.org/github.com/charly3pins/go-amazon-product-api)
-[![Build Status](https://travis-ci.org/charly3pins/go-amazon-product-api.svg?branch=master)](https://travis-ci.org/charly3pins/go-amazon-product-api)
+# amazon-product-api
+[![GoDoc](https://godoc.org/github.com/charly3pins/amazon-product-api?status.svg)](https://godoc.org/github.com/charly3pins/amazon-product-api)
+[![Build Status](https://travis-ci.org/charly3pins/amazon-product-api.svg?branch=master)](https://travis-ci.org/charly3pins/amazon-product-api)
 
-Go Client Library for [Amazon Product API](https://affiliate-program.amazon.com/gp/advertising/api/detail/main.html)
+Go Client Library for [Amazon Product Advertising API](https://affiliate-program.amazon.com/gp/advertising/api/detail/main.html)
 
 ## Usage
 First of all you need to download the library in your [$GOPATH](https://golang.org/doc/code.html#GOPATH) using the following command:
 ```sh
-go get -u github.com/charly3pins/go-amazon-product-api/amazon
+go get -u github.com/charly3pins/amazon-product-advertising
 ```
 Then, you can create a simple example.go and call the NewClient(config) constructor passing the ClientConfig with your credentials and call the ItemSearch(criteria) method with your creteria, selecting the SearchIndex and the Keywords, to search by text:
 ```go
@@ -15,7 +15,7 @@ package main
 
 import (
 	"fmt"
-	amazon "github.com/charly3pins/go-amazon-product-api"
+	amazon "github.com/charly3pins/amazon-product-advertising"
 )
 
 func main() {
@@ -48,6 +48,3 @@ Finally, you can execute the example created:
 ```
 go run example.go
 ```
-
-## Author
-[Charly3Pins](http://github.com/charly3pins)
